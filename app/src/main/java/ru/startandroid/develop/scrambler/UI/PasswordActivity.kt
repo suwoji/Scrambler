@@ -1,21 +1,23 @@
-package ru.startandroid.develop.scrambler
+package ru.startandroid.develop.scrambler.UI
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import ru.startandroid.develop.scrambler.R
 
 class PasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password)
-        val passwordEditText: EditText = findViewById(R.id.passwordPlainText);
+        val passwordEditText: EditText = findViewById(R.id.newPasswordPlainText);
         Toast.makeText(this, passwordEditText.toString(), Toast.LENGTH_SHORT);
 
         val one: Button = findViewById(R.id.button1);
         one.setOnClickListener{
             passwordEditText.setText(passwordEditText.text.toString() + "1");
+//    TODO   password checking
         }
 
         val two: Button = findViewById(R.id.button2);
