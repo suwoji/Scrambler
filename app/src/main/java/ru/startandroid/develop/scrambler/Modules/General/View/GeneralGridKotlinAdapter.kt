@@ -29,7 +29,7 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
     }
 
     // create a new ImageView for each item referenced by the Adapter
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 //        for( int i = 0; i < mThumbIds.size(); i++){
         val imageView: ImageView
         if (convertView == null) {
