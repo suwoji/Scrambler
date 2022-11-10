@@ -1,4 +1,4 @@
-package ru.startandroid.develop.scrambler
+package ru.startandroid.develop.scrambler.Modules
 
 interface MVPView {
 

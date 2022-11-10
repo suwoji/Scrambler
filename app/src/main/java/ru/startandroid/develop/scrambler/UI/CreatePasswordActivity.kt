@@ -1,23 +1,34 @@
 package ru.startandroid.develop.scrambler.UI
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import ru.startandroid.develop.scrambler.R
 
 class CreatePasswordActivity : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_password)
-        val passwordEditText: EditText = findViewById(R.id.newPasswordPlainText);
-        Toast.makeText(this, passwordEditText.toString(), Toast.LENGTH_SHORT);
+        val passwordEditText: EditText = findViewById(R.id.newPasswordPlainText)
+        Toast.makeText(this, passwordEditText.toString(), Toast.LENGTH_SHORT)
+        val sharedPreference =  getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
 
         val empty: Button = findViewById(R.id.emptyButton);
         empty.setOnClickListener{
-
+            if(passwordEditText.text.length == 4) {
+                editor.putString("username", passwordEditText.getText().toString())
+                editor.commit()
+            } else {
+                Toast.makeText(applicationContext, "short password", LENGTH_SHORT).show()
+            }
         }
 
         val delete: Button = findViewById(R.id.deleteButton);

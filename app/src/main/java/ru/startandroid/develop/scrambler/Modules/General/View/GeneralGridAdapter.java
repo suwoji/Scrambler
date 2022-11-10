@@ -1,35 +1,39 @@
-package ru.startandroid.develop.scrambler;
+package ru.startandroid.develop.scrambler.Modules.General.View;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ru.startandroid.develop.scrambler.Model.ImageDBService;
+import ru.startandroid.develop.scrambler.Model.ImageInfo;
+import ru.startandroid.develop.scrambler.R;
 import ru.startandroid.develop.scrambler.UI.FullImageActivity;
 
-public class GalleryAdapter extends BaseAdapter {
+public class GeneralGridAdapter extends BaseAdapter {
     private Context mContext;
+
     ArrayList<Bitmap> mThumbIds = new ArrayList<Bitmap>();
-    public GalleryAdapter(Context c, ArrayList<Bitmap> img) {
+    ArrayList<ImageInfo> previewUri = new ArrayList<ImageInfo>();
+    public GeneralGridAdapter(Context c, ArrayList<ImageInfo> img) {
         mContext = c;
-        mThumbIds = img;
+        previewUri = ImageDBService.INSTANCE.queryAllImages();
+//        mThumbIds = img;
     }
 
     public int getCount() {
-        return mThumbIds.size();
+        return previewUri.size();
     }
 
     public Object getItem(int position) {
-        return mThumbIds.get(position);
+        return previewUri.get(position);
     }
 
     public long getItemId(int position) {
@@ -52,7 +56,7 @@ public class GalleryAdapter extends BaseAdapter {
         Intent intent = new Intent(mContext, FullImageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        imageView.setImageBitmap(mThumbIds.get(position));
+        imageView.setImageURI(Uri.parse(previewUri.get(position).getPreviewUri()));
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

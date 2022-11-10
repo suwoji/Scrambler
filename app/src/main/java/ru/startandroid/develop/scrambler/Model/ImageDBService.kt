@@ -1,4 +1,4 @@
-package ru.startandroid.develop.scrambler
+package ru.startandroid.develop.scrambler.Model
 
 import android.net.Uri
 import io.realm.*
@@ -13,8 +13,8 @@ object ImageDBService{
     fun writeImage( name : String, prewUri : Uri, origUri : Uri){
         val imageInfo = ImageInfo().apply{
             this.name = name
-            previewUri = prewUri
-            originalUri = origUri
+            previewUri = prewUri.toString()
+            originalUri = origUri.toString()
         }
         val managedImage = realm.writeBlocking {
             copyToRealm(imageInfo)
@@ -24,8 +24,8 @@ object ImageDBService{
     suspend fun writeImageAsync(name : String, prewUri : Uri, origUri : Uri){
         val imageInfo = ImageInfo().apply{
             this.name = name
-            previewUri = prewUri
-            originalUri = origUri
+            previewUri = prewUri.toString()
+            originalUri = origUri.toString()
         }
         realm.write {
             copyToRealm(imageInfo)
@@ -35,6 +35,13 @@ object ImageDBService{
     fun queryAllImages() : ArrayList<ImageInfo> {
 
         return ArrayList(realm.query<ImageInfo>().find());
+    }
+
+    //TODO: optimize in future
+    fun queryAllImagesCount() : Int {
+        //realm.objects(Category.self).filter("dateCreated != ''").count
+        //return realm.query<ImageInfo>().count()
+            return queryAllImages().count()
     }
 
     //TODO: return ArrayList<ImageInfo>

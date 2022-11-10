@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purple_700"
-    tools:context=".UI.GeneralActivity">
+    tools:context=".Modules.General.View.GeneralActivity">
 
     <Button
         android:id="@+id/addFileButton"
@@ -28,6 +28,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:visibility="invisible"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/addFileButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,10 +42,10 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:horizontalSpacing="5dp"
-        android:numColumns="2"
+        android:horizontalSpacing="2dp"
+        android:numColumns="3"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="6dp"
+        android:verticalSpacing="2dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/addFileButton"
         app:layout_constraintEnd_toEndOf="parent"
