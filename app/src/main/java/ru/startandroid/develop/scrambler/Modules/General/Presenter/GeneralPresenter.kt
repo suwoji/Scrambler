@@ -47,7 +47,9 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
 
 
             if (scrambler.encrypt(context, orig.toString()) && scrambler.encrypt(context, prev.toString())) {
-                loadImageInfoToDataBase(uniqueID, prev, orig)
+                var newPrev : Uri = Uri.parse(prev.path + ".cyp")
+                var newOrig : Uri = Uri.parse(orig.path + ".cyp")
+                loadImageInfoToDataBase(uniqueID, newPrev, newOrig)
             } else {
                 //Encrypt failed
             }
@@ -70,7 +72,7 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
     }
 
     override fun fullSizeImage(context: Context, index: Int): Bitmap {
-        val uri = imageDBService.queryAllImages()[index].originalUri
+        val uri = imageDBService.queryAllImages()[index].originalUri    
         val result = scrambler.decrypt(context, uri.toString())
         if (result.second) {
             val decImageUri = Uri.parse(result.first)

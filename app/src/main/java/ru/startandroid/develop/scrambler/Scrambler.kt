@@ -12,8 +12,9 @@ import javax.crypto.CipherInputStream
 import javax.crypto.CipherOutputStream
 import javax.crypto.spec.SecretKeySpec
 
+
 private const val ENC_EXT = ".cyp"
-private const val KEY: String = "KERQIRUDYTH"
+private const val KEY: String = "KERQIRUDYTHSGTYJ"
 
 class Scrambler: ScramblerInterface {
     override fun decrypt(context: Context, encFilePath: String): Pair<String?, Boolean> {
@@ -28,7 +29,7 @@ class Scrambler: ScramblerInterface {
         val encFile = File(encFilePath)
 
         // on below line creating input stream for file with file path.
-        val encFileOutputStream = FileInputStream(encFile.path)
+        val encFileInputStream = FileInputStream(encFile.path)
 
         // on below line creating a file for decrypted image.
         val decFile = File(encFilePath.removeSuffix(ENC_EXT))
@@ -52,7 +53,7 @@ class Scrambler: ScramblerInterface {
 
         // on below line creating a variable
         // for cipher input stream.
-        val cipherInputStream = CipherInputStream(encFileOutputStream, cipher)
+        val cipherInputStream = CipherInputStream(encFileInputStream, cipher)
 
         // on below line creating a variable b.
         var b: Int
@@ -108,6 +109,7 @@ class Scrambler: ScramblerInterface {
         // creating a variable for secret key and passing our
         // secret key and algorithm for encryption.
         val sks = SecretKeySpec(KEY.toByteArray(), "AES")
+
 
         // on below line creating a variable for
         // cipher and initializing it

@@ -11,7 +11,7 @@ import ru.startandroid.develop.scrambler.UI.FullImageActivity
 
 class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAdapterDelegate) : BaseAdapter() {
 
-    private var delegate: GeneralGridAdapterDelegate = del
+     private var delegate: GeneralGridAdapterDelegate = del
 
     init {
     }

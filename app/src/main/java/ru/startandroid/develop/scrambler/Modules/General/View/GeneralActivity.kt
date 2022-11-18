@@ -35,7 +35,7 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         list.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
             applicationContext.startActivity(intent)
         })
-
+        adapter = GeneralGridKotlinAdapter(applicationContext, this)
         val plus: Button = findViewById(R.id.addFileButton)
         plus.setOnClickListener {
             pickImageFromGallery()
@@ -72,6 +72,7 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
                 applicationContext,
                 this
             )
+
         list.adapter = adapter
     }
 
@@ -89,6 +90,8 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
     // GeneralGridAdapterDelegate
 
     override fun cellsCount(): Int {
+        val asd = presenter.imageCount()
+        println(asd)
         return presenter.imageCount()
     }
 
