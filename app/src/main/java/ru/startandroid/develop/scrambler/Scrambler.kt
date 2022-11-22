@@ -1,8 +1,10 @@
 package ru.startandroid.develop.scrambler
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.widget.*
 import java.io.File
 import java.io.FileInputStream
@@ -16,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec
 private const val ENC_EXT = ".cyp"
 private const val KEY: String = "KERQIRUDYTHSGTYJ"
 
-class Scrambler: ScramblerInterface {
+class Scrambler2: ScramblerInterface {
     override fun decrypt(context: Context, encFilePath: String): Pair<String?, Boolean> {
         // on below line creating and initializing
         // variable for context wrapper.
@@ -59,8 +61,11 @@ class Scrambler: ScramblerInterface {
         var b: Int
         val d: ByteArray = ByteArray(8)
         b = cipherInputStream.read(d)
+        var temp = 0
         while (b != -1) {
             decFileOutputStream.write(d, 0, b)
+            temp++
+            Log.d(TAG, "Itter:" + b.toString())
             b = cipherInputStream.read(d)
         }
 
