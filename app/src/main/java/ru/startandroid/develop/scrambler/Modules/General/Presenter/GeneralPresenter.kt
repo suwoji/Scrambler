@@ -1,6 +1,8 @@
 package ru.startandroid.develop.scrambler.Modules.General.Presenter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -8,8 +10,10 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.content.ContentProviderCompat.requireContext
 import ru.startandroid.develop.scrambler.Model.ImageDBService
+import ru.startandroid.develop.scrambler.Modules.General.Router
 import ru.startandroid.develop.scrambler.Modules.MVPView
 import ru.startandroid.develop.scrambler.Scrambler
+//import ru.startandroid.develop.scrambler.UI.FullImageActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -37,14 +41,17 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
 //            FileProvider.getUriForFile(context, "Original", file)
         return uri
     }
+    fun openFullscreenImage(context: Context){
+//        val intent = Intent(context, FullImageActivity::class.java)
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//        context.startActivity(intent)
+    }
 
     override fun didPickImageFromGallery(context: Context, image: Bitmap){
 //            images?.add(image)
             var uniqueID = UUID.randomUUID().toString()
             var orig : Uri = saveImage(context, image, uniqueID + ".jpg", "Original", 80)
             var prev : Uri = saveImage(context, image, uniqueID + ".jpg", "Preview", 50)
-
-
 
             if (scrambler.encrypt(context, orig.toString()) && scrambler.encrypt(context, prev.toString())) {
                 var newPrev : Uri = Uri.parse(prev.path + ".cyp")
@@ -54,7 +61,6 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
                 //Encrypt failed
             }
     }
-
 
     private var view: V? = null
     private val isViewAttached: Boolean get() = view != null
@@ -70,31 +76,34 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
     override fun imageCount(): Int {
         return imageDBService.queryAllImagesCount()
     }
+//    var fullscreen : Bitmap? = null;
+    override fun saveFullscreenImage(bitmap: Bitmap){
+        Router.shared()?.saveFullscreenImage(bitmap)
+    }
 
     override fun fullSizeImage(context: Context, index: Int): Bitmap {
-        val uri = imageDBService.queryAllImages()[index].originalUri    
+        val uri = imageDBService.queryAllImages()[index].originalUri
         val result = scrambler.decrypt(context, uri.toString())
-        if (result.second) {
-            val decImageUri = Uri.parse(result.first)
-            val decImage = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, decImageUri))
-            return decImage
-        }
-        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+//        if (result.second) {
+//            val decImageUri = Uri.parse(result)
+//            val decImage = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, decImageUri))
+            return result
+//        }
+//        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     }
 
     override fun previewImages(context: Context, index: Int): Bitmap {
         val uri = imageDBService.queryAllImages()[index].previewUri
         val result = scrambler.decrypt(context, uri.toString())
-        if (result.second) {
-            val decImageUri = Uri.parse(result.first)
-            val decImage = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, decImageUri))
-            return decImage
-        }
-        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+//        if (result.second) {
+//            val decImageUri = Uri.parse(result)
+//            val decImage = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, decImageUri))
+            return result
+//        }
+//        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     }
 
     override fun onAttach(view: V?) {
-
     }
 
     override fun getView(): V? {

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import ru.startandroid.develop.scrambler.Model.ImageDBService;
 import ru.startandroid.develop.scrambler.Model.ImageInfo;
 import ru.startandroid.develop.scrambler.R;
-import ru.startandroid.develop.scrambler.UI.FullImageActivity;
+//import ru.startandroid.develop.scrambler.UI.FullImageActivity;
 
 public class GeneralGridAdapter extends BaseAdapter {
     private Context mContext;
@@ -47,14 +47,16 @@ public class GeneralGridAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
+//            imageView.setAdjustViewBounds(true);
             imageView.setLayoutParams(new GridView.LayoutParams(350, 350));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            imageView.setPadding(8, 8, 8, 8);
+
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
+//            imageView.setPadding(8, 8, 8, 8);
         } else {
             imageView = (ImageView) convertView;
         }
-        Intent intent = new Intent(mContext, FullImageActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        Intent intent = new Intent(mContext, FullImageActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         imageView.setImageURI(Uri.parse(previewUri.get(position).getPreviewUri()));
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +64,7 @@ public class GeneralGridAdapter extends BaseAdapter {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.imageView: {
-                        mContext.startActivity(intent);
+//                        mContext.startActivity(intent);
                     }
                 }
             }

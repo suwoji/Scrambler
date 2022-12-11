@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Scrambler {
     private String ENC_EXT = ".cyp";
     private String KEY = "KERQIRUDYTHSGTYJ";
-    public String decrypt(Context context, String encFilePath) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+    public Bitmap decrypt(Context context, String encFilePath) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
         // on below line creating and initializing variable for context wrapper.
         ContextWrapper contextWrapper = new ContextWrapper(context);
 
@@ -74,18 +74,21 @@ public class Scrambler {
         cipherInputStream.close();
 
         // displaying toast message.
-        Toast.makeText(context, "File decrypted successfully..", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "File decrypted successfully..", Toast.LENGTH_SHORT).show();
 
         // on below line creating an image file
         // from decrypted image file path.
         File imgFile = new File(decFile.getPath());
+        Bitmap bit = BitmapFactory.decodeFile(imgFile.getPath());
         if (imgFile.exists()) {
             // creating bitmap for image and displaying
             // that bitmap in our image view.
             Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getPath());
 //            imageView.setImageBitmap(bitmap);
+
         }
-        return decFile.getPath();
+
+        return bit;
     }
 
     // on below line creating a method to encrypt an image.

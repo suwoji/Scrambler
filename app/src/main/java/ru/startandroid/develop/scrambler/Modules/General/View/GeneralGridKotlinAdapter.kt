@@ -1,18 +1,19 @@
 package ru.startandroid.develop.scrambler.Modules.General.View
 
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import ru.startandroid.develop.scrambler.UI.FullImageActivity
 
-class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAdapterDelegate) : BaseAdapter() {
+
+//import ru.startandroid.develop.scrambler.UI.FullImageActivity
+
+class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAdapterDelegate, width: Int) : BaseAdapter() {
 
      private var delegate: GeneralGridAdapterDelegate = del
-
+        var screenWidth = width
     init {
     }
 
@@ -35,14 +36,13 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = ImageView(mContext)
-            imageView.layoutParams = AbsListView.LayoutParams(350, 350)
-            imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            imageView.setPadding(8, 8, 8, 8)
+            imageView.layoutParams = AbsListView.LayoutParams(screenWidth/3 - 10, screenWidth/3 - 10)
+            imageView.scaleType = ImageView.ScaleType.CENTER
         } else {
             imageView = convertView as ImageView
         }
-        val intent = Intent(mContext, FullImageActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//        val intent = Intent(mContext, FullImageActivity::class.java)
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         imageView.setImageBitmap(delegate.imageForCell(position))
 
 //        imageView.setOnClickListener { v ->
