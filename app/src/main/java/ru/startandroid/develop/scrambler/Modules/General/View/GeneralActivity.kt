@@ -1,16 +1,20 @@
 package ru.startandroid.develop.scrambler.Modules.General.View
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.GridView
 import androidx.appcompat.app.AppCompatActivity
-import ru.startandroid.develop.scrambler.Modules.FullscreenImagePresenter
 import ru.startandroid.develop.scrambler.Modules.General.Presenter.GeneralPresenter
 import ru.startandroid.develop.scrambler.Modules.General.Presenter.GeneralPresenterInterface
 import ru.startandroid.develop.scrambler.Modules.General.Router
@@ -18,6 +22,7 @@ import ru.startandroid.develop.scrambler.Modules.MVPView
 import ru.startandroid.develop.scrambler.R
 import ru.startandroid.develop.scrambler.UI.FullImageActivity
 import ru.startandroid.develop.scrambler.UI.PasswordActivity
+import java.io.File
 
 
 class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity() {
@@ -25,6 +30,8 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
     lateinit var list: GridView
     var lock = true
     var width: Int = 0
+    var temp: Uri? = null
+
     var presenter: GeneralPresenterInterface<GeneralActivity> = GeneralPresenter<GeneralActivity>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +88,8 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
 //            image.buildDrawingCache()
             val bmap: Bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(applicationContext.contentResolver, data?.data!!))
             presenter.didPickImageFromGallery(applicationContext, bmap, data?.data!!)
+            temp = data.data
+
 //            val image: ImageView = findViewById(R.id.imageView)
 //            image.setImageURI(data?.data)
 //            image.buildDrawingCache()
@@ -102,8 +111,43 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
             )
 
         list.adapter = adapter
+//        if (temp != null) {
+//            val fdelete: File = File(getImageFilePath(applicationContext, temp))
+//
+//            if (fdelete.delete()) {
+//                if (fdelete.delete()) {
+//                    val deleted2: Boolean = fdelete.getCanonicalFile().delete()
+//                    if (!deleted2) {
+//                        applicationContext.deleteFile(fdelete.getName())
+//                    }
+//
+//                    System.out.println("file Deleted :" + temp!!.getPath())
+//                } else {
+//                    System.out.println("file not Deleted :" + temp!!.getPath())
+//                }
+//            }
+//        }
     }
 
+    @SuppressLint("Range")
+    open fun getImageFilePath(context: Context, uri: Uri?): String? {
+        var path: String? = null /*from  w ww  . j av  a2s  .c o m*/
+        var cursor: Cursor? = null
+        try {
+            cursor = context.contentResolver.query(
+                uri!!,
+                arrayOf(MediaStore.Images.Media.DATA),
+                null,
+                null,
+                null
+            )
+            cursor?.moveToFirst()
+            path = cursor?.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        } finally {
+            cursor?.close()
+        }
+        return path
+    }
 //    override fun onPause() {
 //        super.onPause()
 //        Router.setStatus(false)
