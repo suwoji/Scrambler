@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
+import ru.startandroid.develop.scrambler.Modules.General.View.GeneralActivity
 import ru.startandroid.develop.scrambler.R
 
 
@@ -37,7 +38,7 @@ class CreatePasswordActivity : AppCompatActivity() {
                 editor.putString("correctPassword", passwordEditText.getText().toString())
                 editor.commit()
 
-                val intent = Intent(applicationContext, PasswordActivity::class.java)
+                val intent = Intent(applicationContext, GeneralActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 applicationContext.startActivity(intent)
                 finish()

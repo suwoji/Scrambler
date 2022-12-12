@@ -1,22 +1,24 @@
 package ru.startandroid.develop.scrambler.Modules.General.Presenter
 
+//import ru.startandroid.develop.scrambler.UI.FullImageActivity
+import android.R.attr.path
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
-import androidx.core.content.ContentProviderCompat.requireContext
 import ru.startandroid.develop.scrambler.Model.ImageDBService
 import ru.startandroid.develop.scrambler.Modules.General.Router
 import ru.startandroid.develop.scrambler.Modules.MVPView
 import ru.startandroid.develop.scrambler.Scrambler
-//import ru.startandroid.develop.scrambler.UI.FullImageActivity
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.file.DirectoryNotEmptyException
+import java.nio.file.Files
 import java.util.*
+
 
 open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
     private val imageDBService = ImageDBService
@@ -47,20 +49,69 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
 //        context.startActivity(intent)
     }
 
-    override fun didPickImageFromGallery(context: Context, image: Bitmap){
+    override fun didPickImageFromGallery(context: Context, image: Bitmap, data: Uri){
 //            images?.add(image)
-            var uniqueID = UUID.randomUUID().toString()
-            var orig : Uri = saveImage(context, image, uniqueID + ".jpg", "Original", 80)
-            var prev : Uri = saveImage(context, image, uniqueID + ".jpg", "Preview", 50)
-
+        var w = image.width
+        var h = image.height
+        var ans = 1
+        if (w > h) {
+            ans = w / 256
+            h /= ans
+            w = 256
+        }else {
+            ans = h / 256
+            w /= ans
+            h = 256
+        }
+        var uniqueID = UUID.randomUUID().toString()
+            var orig : Uri = saveImage(context, image, uniqueID + ".jpg", "Original", 100)
+            var prev : Uri = saveImage(context, Bitmap.createScaledBitmap(image, w,h, false), uniqueID + ".jpg", "Preview", 100)
             if (scrambler.encrypt(context, orig.toString()) && scrambler.encrypt(context, prev.toString())) {
                 var newPrev : Uri = Uri.parse(prev.path + ".cyp")
                 var newOrig : Uri = Uri.parse(orig.path + ".cyp")
                 loadImageInfoToDataBase(uniqueID, newPrev, newOrig)
+
+
+                    val fdelete: File = File(getImageFilePath(context, data))
+
+                    if (fdelete.delete()) {
+                        if (fdelete.delete()) {
+                            val deleted2: Boolean = fdelete.getCanonicalFile().delete()
+                            if (!deleted2) {
+                                context.deleteFile(fdelete.getName())
+                            }
+
+                            System.out.println("file Deleted :" + data!!.getPath())
+                        } else {
+                            System.out.println("file not Deleted :" + data!!.getPath())
+                        }
+                    }
             } else {
                 //Encrypt failed
             }
     }
+
+    @SuppressLint("Range")
+    open fun getImageFilePath(context: Context, uri: Uri?): String? {
+        var path: String? = null /*from  w ww  . j av  a2s  .c o m*/
+        var cursor: Cursor? = null
+        try {
+            cursor = context.contentResolver.query(
+                uri!!,
+                arrayOf(MediaStore.Images.Media.DATA),
+                null,
+                null,
+                null
+            )
+            cursor?.moveToFirst()
+            path = cursor?.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        } finally {
+            cursor?.close()
+        }
+        return path
+    }
+
+
 
     private var view: V? = null
     private val isViewAttached: Boolean get() = view != null

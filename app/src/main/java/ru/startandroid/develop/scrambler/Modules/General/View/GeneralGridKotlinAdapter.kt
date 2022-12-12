@@ -37,7 +37,7 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
             // if it's not recycled, initialize some attributes
             imageView = ImageView(mContext)
             imageView.layoutParams = AbsListView.LayoutParams(screenWidth/3 - 10, screenWidth/3 - 10)
-            imageView.scaleType = ImageView.ScaleType.CENTER
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
             imageView = convertView as ImageView
         }
