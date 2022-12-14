@@ -12,13 +12,21 @@ object Router {
         }
         return Router.mInstance
     }
+
     var fullscreen: Bitmap? = null
-    fun saveFullscreenImage(bitmap: Bitmap){
+    var position: Int? = null
+    fun saveFullscreenImage(bitmap: Bitmap, pos: Int){
         fullscreen = bitmap
+        position = pos
     }
 
     fun loadFullscreenImage(): Bitmap? {
         return fullscreen
+    }
+
+
+    fun getPos():Int?{
+        return position
     }
 
     fun setStatus(status: Boolean){

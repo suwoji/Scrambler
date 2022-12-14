@@ -157,24 +157,7 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
                 this,
                 width
             )
-
         list.adapter = adapter
-//        if (temp != null) {
-//            val fdelete: File = File(getImageFilePath(applicationContext, temp))
-//
-//            if (fdelete.delete()) {
-//                if (fdelete.delete()) {
-//                    val deleted2: Boolean = fdelete.getCanonicalFile().delete()
-//                    if (!deleted2) {
-//                        applicationContext.deleteFile(fdelete.getName())
-//                    }
-//
-//                    System.out.println("file Deleted :" + temp!!.getPath())
-//                } else {
-//                    System.out.println("file not Deleted :" + temp!!.getPath())
-//                }
-//            }
-//        }
     }
 
     @SuppressLint("Range")

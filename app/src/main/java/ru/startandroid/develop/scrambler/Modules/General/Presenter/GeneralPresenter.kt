@@ -135,8 +135,8 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
         return imageDBService.queryAllImagesCount()
     }
 //    var fullscreen : Bitmap? = null;
-    override fun saveFullscreenImage(bitmap: Bitmap){
-        Router.shared()?.saveFullscreenImage(bitmap)
+    override fun saveFullscreenImage(bitmap: Bitmap, pos: Int){
+        Router.shared()?.saveFullscreenImage(bitmap, pos)
     }
 
     override fun fullSizeImage(context: Context, index: Int): Bitmap {

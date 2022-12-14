@@ -1,6 +1,7 @@
 package ru.startandroid.develop.scrambler.Model
 
 import android.net.Uri
+import android.provider.CalendarContract.Attendees.query
 import io.realm.*
 import io.realm.notifications.*
 import io.realm.query.RealmQuery
@@ -36,9 +37,8 @@ object ImageDBService{
 
         return ArrayList(realm.query<ImageInfo>().find())
     }
-    fun queryImage() : ArrayList<ImageInfo> {
-
-        return ArrayList(realm.query<ImageInfo>().find())
+    fun queryImage(pos: Int) : ImageInfo {
+        return ArrayList(realm.query<ImageInfo>().find()).get(pos)
     }
     //TODO: optimize in future
     fun queryAllImagesCount() : Int {
@@ -62,6 +62,10 @@ object ImageDBService{
 //        //find
 //        realm.query<ImageInfo>("")
 //    }
+
+     fun deleteImage(pos: Int) {
+        realm.query<ImageInfo>().find().drop(pos)
+    }
 
     suspend fun deleteAllImages() {
         realm.write{

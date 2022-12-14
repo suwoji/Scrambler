@@ -1,12 +1,8 @@
 package ru.startandroid.develop.scrambler.UI
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.MenuItem
@@ -17,9 +13,8 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import ru.startandroid.develop.scrambler.Model.ImageDBService
 import ru.startandroid.develop.scrambler.Modules.General.Router
-import ru.startandroid.develop.scrambler.Modules.General.View.GeneralGridKotlinAdapter
 import ru.startandroid.develop.scrambler.R
 import java.io.File
 import java.io.FileNotFoundException
@@ -58,18 +53,21 @@ class FullImageActivity : AppCompatActivity() {
         val shareIntent = Intent.createChooser(sendIntent, null)
         shareButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
-                saveImage(Router.loadFullscreenImage()!!)
-
+                moveImageToGallery(Router.loadFullscreenImage()!!)
 //                showPopupMenu(view)
             }
         })
     }
 
-
-    fun moveImageToGallery(context: Context, imageUri: Uri){
-        var file = File(imageUri.path)
+    fun deleteEncryptedImages (info: ru.startandroid.develop.scrambler.Model.ImageInfo){
+        var prevDelete = File(info.previewUri)
+        prevDelete.delete()
+        var origDelete = File(info.originalUri)
+        origDelete.delete()
+        ImageDBService.deleteImage(Router.getPos()!!)
     }
-    private fun saveImage(drawable: Bitmap) {
+
+    private fun moveImageToGallery(drawable: Bitmap) {
         val file = getDisc()
 
         if (!file.exists() && !file.mkdirs()) {
@@ -98,7 +96,7 @@ class FullImageActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
+        deleteEncryptedImages(ImageDBService.queryImage(Router.getPos()!!))
     }
 
     private fun getDisc(): File {
