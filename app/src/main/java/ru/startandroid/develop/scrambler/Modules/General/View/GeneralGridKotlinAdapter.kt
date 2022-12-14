@@ -22,7 +22,7 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
     }
 
     override fun getItem(position: Int): Any {
-        return delegate.imageForCell(position)
+        return delegate.previewImageForCell(position)
     }
 
     override fun getItemId(position: Int): Long {
@@ -31,7 +31,6 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
 
     // create a new ImageView for each item referenced by the Adapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-//        for( int i = 0; i < mThumbIds.size(); i++){
         val imageView: ImageView
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
@@ -41,17 +40,7 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
         } else {
             imageView = convertView as ImageView
         }
-//        val intent = Intent(mContext, FullImageActivity::class.java)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        imageView.setImageBitmap(delegate.imageForCell(position))
-
-//        imageView.setOnClickListener { v ->
-//            when (v.id) {
-//                R.id.imageView -> {
-//                    mContext.startActivity(intent)
-//                }
-//            }
-//        }
+        imageView.setImageBitmap(delegate.previewImageForCell(position))
 
         return imageView
     } // references to our images

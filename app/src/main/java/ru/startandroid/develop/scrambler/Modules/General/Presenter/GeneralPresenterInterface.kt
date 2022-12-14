@@ -10,6 +10,7 @@ interface GeneralPresenterInterface<V: MVPView>: MVPPresenter<V> {
     fun imageCount(): Int
     fun fullSizeImage(context: Context, index: Int): Bitmap
     fun previewImages(context: Context, index: Int): Bitmap
+    fun originalImage(context: Context, index: Int):Bitmap
     fun didPickImageFromGallery(context: Context, image: Bitmap, data: Uri)
-    fun saveFullscreenImage(bitmap: Bitmap)
+    fun saveFullscreenImage(bitmap: Bitmap, pos: Int)
 }

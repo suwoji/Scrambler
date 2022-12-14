@@ -80,6 +80,7 @@ public class Scrambler {
         // from decrypted image file path.
         File imgFile = new File(decFile.getPath());
         Bitmap bit = BitmapFactory.decodeFile(imgFile.getPath());
+        imgFile.delete();
         if (imgFile.exists()) {
             // creating bitmap for image and displaying
             // that bitmap in our image view.

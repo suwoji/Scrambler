@@ -1,20 +1,27 @@
 package ru.startandroid.develop.scrambler.Modules.General.View
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.GridView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import ru.startandroid.develop.scrambler.Modules.General.Presenter.GeneralPresenter
 import ru.startandroid.develop.scrambler.Modules.General.Presenter.GeneralPresenterInterface
 import ru.startandroid.develop.scrambler.Modules.General.Router
@@ -22,7 +29,6 @@ import ru.startandroid.develop.scrambler.Modules.MVPView
 import ru.startandroid.develop.scrambler.R
 import ru.startandroid.develop.scrambler.UI.FullImageActivity
 import ru.startandroid.develop.scrambler.UI.PasswordActivity
-import java.io.File
 
 
 class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity() {
@@ -42,9 +48,13 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         val intent = Intent(applicationContext, FullImageActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
+        if(!checkPermission()){
+            requestPermission();
+        }
+
         list = findViewById(R.id.GalleryList)
         list.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
-            presenter.saveFullscreenImage(imageForCell(position))
+            presenter.saveFullscreenImage(originalImageForCell(position), position)
             lock = false
             applicationContext.startActivity(intent)
         })
@@ -94,6 +104,44 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
 //            image.setImageURI(data?.data)
 //            image.buildDrawingCache()
         }
+    }
+
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                intent.addCategory("android.intent.category.DEFAULT")
+                intent.data =
+                    Uri.parse(String.format("package:%s", applicationContext.packageName))
+                startActivityForResult(intent, 2296)
+            } catch (e: Exception) {
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                startActivityForResult(intent, 2296)
+            }
+        } else {
+            //below android 11
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(WRITE_EXTERNAL_STORAGE),
+                10
+            )
+        }
+    }
+
+
+    private fun checkPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return Environment.isExternalStorageManager()
+        } else {
+            var result = 0
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                result = applicationContext.checkSelfPermission(READ_EXTERNAL_STORAGE)
+                val result1: Int = applicationContext.checkSelfPermission(WRITE_EXTERNAL_STORAGE)
+                return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
+            }
+        }
+        return true
     }
     override fun onResume() {
         super.onResume()
@@ -178,8 +226,11 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         return presenter.imageCount()
     }
 
-    override fun imageForCell(index: Int): Bitmap {
+    override fun previewImageForCell(index: Int): Bitmap {
         return presenter.previewImages(applicationContext, index)
     }
 
+    fun originalImageForCell(index: Int): Bitmap {
+        return presenter.originalImage(applicationContext, index)
+    }
 }

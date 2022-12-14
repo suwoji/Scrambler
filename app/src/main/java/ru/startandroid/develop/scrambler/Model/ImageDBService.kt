@@ -34,9 +34,12 @@ object ImageDBService{
 
     fun queryAllImages() : ArrayList<ImageInfo> {
 
-        return ArrayList(realm.query<ImageInfo>().find());
+        return ArrayList(realm.query<ImageInfo>().find())
     }
+    fun queryImage() : ArrayList<ImageInfo> {
 
+        return ArrayList(realm.query<ImageInfo>().find())
+    }
     //TODO: optimize in future
     fun queryAllImagesCount() : Int {
         //realm.objects(Category.self).filter("dateCreated != ''").count

@@ -1,8 +1,14 @@
 package ru.startandroid.develop.scrambler.UI
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -11,13 +17,18 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import ru.startandroid.develop.scrambler.Modules.General.Router
 import ru.startandroid.develop.scrambler.Modules.General.View.GeneralGridKotlinAdapter
 import ru.startandroid.develop.scrambler.R
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class FullImageActivity : AppCompatActivity() {
@@ -47,11 +58,53 @@ class FullImageActivity : AppCompatActivity() {
         val shareIntent = Intent.createChooser(sendIntent, null)
         shareButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
-                showPopupMenu(view)
+                saveImage(Router.loadFullscreenImage()!!)
+
+//                showPopupMenu(view)
             }
         })
     }
 
+
+    fun moveImageToGallery(context: Context, imageUri: Uri){
+        var file = File(imageUri.path)
+    }
+    private fun saveImage(drawable: Bitmap) {
+        val file = getDisc()
+
+        if (!file.exists() && !file.mkdirs()) {
+            file.mkdir()
+        }
+
+        val simpleDateFormat = SimpleDateFormat("yyyymmsshhmmss")
+        val date = simpleDateFormat.format(Date())
+        val name = "IMG" + date + ".jpg"
+        val fileName = file.absolutePath + "/" + name
+        val newFile = File(fileName)
+
+        try {
+//            val draw = drawable as BitmapDrawable
+            val bitmap = drawable
+            val fileOutPutStream = FileOutputStream(newFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutPutStream)
+            Toast.makeText(applicationContext, "File saved succesfully", Toast.LENGTH_SHORT)
+                .show()
+//             = newFile
+            fileOutPutStream.flush()
+            fileOutPutStream.close()
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun getDisc(): File {
+        val file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        return File(file, "Camera")
+    }
 
     fun showPopupMenu(v: View?) {
 

@@ -1,22 +1,23 @@
 package ru.startandroid.develop.scrambler.Modules.General.Presenter
 
 //import ru.startandroid.develop.scrambler.UI.FullImageActivity
-import android.R.attr.path
+
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.widget.Toast
 import ru.startandroid.develop.scrambler.Model.ImageDBService
 import ru.startandroid.develop.scrambler.Modules.General.Router
 import ru.startandroid.develop.scrambler.Modules.MVPView
 import ru.startandroid.develop.scrambler.Scrambler
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.nio.file.DirectoryNotEmptyException
-import java.nio.file.Files
 import java.util.*
 
 
@@ -43,11 +44,6 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
 //            FileProvider.getUriForFile(context, "Original", file)
         return uri
     }
-    fun openFullscreenImage(context: Context){
-//        val intent = Intent(context, FullImageActivity::class.java)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        context.startActivity(intent)
-    }
 
     override fun didPickImageFromGallery(context: Context, image: Bitmap, data: Uri){
 //            images?.add(image)
@@ -73,8 +69,19 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
 
 
                     val fdelete: File = File(getImageFilePath(context, data))
+//                val fdelete: File = File(data.path)
+//                fileDelete(Uri.parse(fdelete.path), context)
+//                context.contentResolver.delete(Uri.fromFile(fdelete), null,null)
+                fdelete.delete()
+                context.sendBroadcast(
+                    Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(
+                            fdelete
+                        )
+                    )
+                )
 
-                    if (fdelete.delete()) {
+                if (fdelete.delete()) {
                         if (fdelete.delete()) {
                             val deleted2: Boolean = fdelete.getCanonicalFile().delete()
                             if (!deleted2) {
@@ -152,6 +159,12 @@ open class GeneralPresenter <V: MVPView>: GeneralPresenterInterface<V>{
             return result
 //        }
 //        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+    }
+
+    override fun originalImage(context: Context, index: Int): Bitmap {
+        val uri = imageDBService.queryAllImages()[index].originalUri
+        val result = scrambler.decrypt(context, uri.toString())
+        return result
     }
 
     override fun onAttach(view: V?) {
