@@ -54,6 +54,7 @@ class FullImageActivity : AppCompatActivity() {
         shareButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
                 moveImageToGallery(Router.loadFullscreenImage()!!)
+                finish()
 //                showPopupMenu(view)
             }
         })
