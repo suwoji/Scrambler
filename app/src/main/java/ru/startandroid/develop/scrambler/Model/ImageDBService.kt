@@ -62,9 +62,11 @@ object ImageDBService{
 //        //find
 //        realm.query<ImageInfo>("")
 //    }
-
-     fun deleteImage(pos: Int) {
-        realm.query<ImageInfo>().find().drop(pos)
+//
+      fun deleteImage(pos: Int) {
+        realm.writeBlocking {
+            delete(this.query<ImageInfo>().find().get(pos))
+        }
     }
 
     suspend fun deleteAllImages() {

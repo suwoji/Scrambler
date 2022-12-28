@@ -12,9 +12,11 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import ru.startandroid.develop.scrambler.Model.ImageDBService
 import ru.startandroid.develop.scrambler.Modules.General.Router
+import ru.startandroid.develop.scrambler.Modules.General.View.GeneralActivity
 import ru.startandroid.develop.scrambler.R
 import java.io.File
 import java.io.FileNotFoundException
@@ -24,21 +26,23 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.system.exitProcess
 
 
 class FullImageActivity : AppCompatActivity() {
     lateinit var image: ImageView
     lateinit var shareButton: Button
+    var temp2 = 0
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-        overridePendingTransition(ru.startandroid.develop.scrambler.R.anim.fade_in, ru.startandroid.develop.scrambler.R.anim.fade_out)
+//        overridePendingTransition(ru.startandroid.develop.scrambler.R.anim.fade_in, ru.startandroid.develop.scrambler.R.anim.fade_out)
         super.onCreate(savedInstanceState)
         supportActionBar!!.hide()
         val layoutParams = window.attributes
-        layoutParams.dimAmount = 0.75f
-        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        window.attributes = layoutParams
-        window.allowEnterTransitionOverlap = true
+//        layoutParams.dimAmount = 0.75f
+//        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+//        window.attributes = layoutParams
+//        window.allowEnterTransitionOverlap = true
         setContentView(ru.startandroid.develop.scrambler.R.layout.activity_full_image)
         image = findViewById(R.id.fullScreenImage)
         image.setImageBitmap(Router.loadFullscreenImage())
@@ -53,7 +57,10 @@ class FullImageActivity : AppCompatActivity() {
         val shareIntent = Intent.createChooser(sendIntent, null)
         shareButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
+                temp2=+1
+                Router.setStatus(false)
                 moveImageToGallery(Router.loadFullscreenImage()!!)
+                finish()
 //                showPopupMenu(view)
             }
         })
@@ -141,18 +148,35 @@ class FullImageActivity : AppCompatActivity() {
     fun moveFile(src: File, dest: File) {
         Files.move(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
+    var temp = 0
+    override fun onBackPressed() {
+        Router.setStatus(false)
+        temp+=1
+       finish()
+    }
 
     override fun onStop() {
         super.onStop()
-            Router.setStatus(true)
+        if(temp2==0) {
+            Router.setRemoveTask(true)
+//        System.exit(0)
+//        finishAndRemoveTask()
+//        finish()
+            finishAffinity()
+            this.finishAffinity()
+//        exitProcess(0)
+//        if (temp==0)
+//            Router.setStatus(true)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (Router.getStatus()){
-            val intent2 = Intent(applicationContext, PasswordActivity::class.java)
-            intent2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            applicationContext.startActivity(intent2)
-        }
+//        Router.setStatus(true)
+//        if (Router.getStatus()){
+//            val intent2 = Intent(applicationContext, PasswordActivity::class.java)
+//            intent2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            applicationContext.startActivity(intent2)
+//        }
     }
 }

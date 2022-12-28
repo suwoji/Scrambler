@@ -10,6 +10,18 @@ import androidx.appcompat.app.AppCompatActivity
 import ru.startandroid.develop.scrambler.Modules.General.Router
 import ru.startandroid.develop.scrambler.R
 
+
+
+
+
+
+
+
+
+
+
+
+
 class PasswordActivity : AppCompatActivity() {
     var correctPassword : String = "qwer"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,5 +121,10 @@ class PasswordActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAndRemoveTask()
     }
 }

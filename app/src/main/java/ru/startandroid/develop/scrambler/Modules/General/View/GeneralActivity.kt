@@ -9,7 +9,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageDecoder
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +22,7 @@ import android.util.DisplayMetrics
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.GridView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import ru.startandroid.develop.scrambler.Modules.General.Presenter.GeneralPresenter
@@ -28,6 +31,7 @@ import ru.startandroid.develop.scrambler.Modules.General.Router
 import ru.startandroid.develop.scrambler.Modules.MVPView
 import ru.startandroid.develop.scrambler.R
 import ru.startandroid.develop.scrambler.UI.FullImageActivity
+import ru.startandroid.develop.scrambler.UI.MainActivity
 import ru.startandroid.develop.scrambler.UI.PasswordActivity
 
 
@@ -43,7 +47,12 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_general)
         presenter.onAttach(this)
-        supportActionBar!!.hide()
+//        supportActionBar!!.hide()
+        supportActionBar!!.title = "Gallery"
+
+
+        val colorDrawable = ColorDrawable(Color.parseColor("#4161FF"))
+        supportActionBar!!.setBackgroundDrawable(colorDrawable)
 
         val intent = Intent(applicationContext, FullImageActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -92,17 +101,10 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
             Thread.sleep(2000)
-//            val image = MediaStore.Images.Media.getBitmap(applicationContext.getContentResolver(), data?.data)
-//            val image: ImageView = findViewById(R.id.imageView)
-//            image.setImageURI(data?.data)
-//            image.buildDrawingCache()
             val bmap: Bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(applicationContext.contentResolver, data?.data!!))
             presenter.didPickImageFromGallery(applicationContext, bmap, data?.data!!)
             temp = data.data
-
-//            val image: ImageView = findViewById(R.id.imageView)
-//            image.setImageURI(data?.data)
-//            image.buildDrawingCache()
+            Router.setStatus(false)
         }
     }
 
@@ -129,6 +131,9 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         }
     }
 
+    override fun onBackPressed() {
+        finishAndRemoveTask()
+    }
 
     private fun checkPermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -145,19 +150,24 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
     }
     override fun onResume() {
         super.onResume()
-        lock = true
-            if (Router.getStatus()){
-            val intent2 = Intent(applicationContext, PasswordActivity::class.java)
-            intent2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            applicationContext.startActivity(intent2)
+        if (Router.getRemoveTask())
+            finishAndRemoveTask()
+        else {
+            lock = true
+            if (Router.getStatus()) {
+                lock = false
+                val intent2 = Intent(applicationContext, PasswordActivity::class.java)
+                intent2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                applicationContext.startActivity(intent2)
+            }
+            adapter =
+                GeneralGridKotlinAdapter(
+                    applicationContext,
+                    this,
+                    width
+                )
+            list.adapter = adapter
         }
-        adapter =
-            GeneralGridKotlinAdapter(
-                applicationContext,
-                this,
-                width
-            )
-        list.adapter = adapter
     }
 
     @SuppressLint("Range")
@@ -179,14 +189,14 @@ class GeneralActivity : MVPView, GeneralGridAdapterDelegate, AppCompatActivity()
         }
         return path
     }
-//    override fun onPause() {
-//        super.onPause()
-//        Router.setStatus(false)
-//    }
+
 
     override fun onStop() {
         super.onStop()
+
+//        finishAndRemoveTask()
         if (lock)
+            finishAndRemoveTask()
         Router.setStatus(true)
     }
 

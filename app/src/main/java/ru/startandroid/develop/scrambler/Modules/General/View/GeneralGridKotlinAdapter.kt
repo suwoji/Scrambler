@@ -41,7 +41,6 @@ class GeneralGridKotlinAdapter(private val mContext: Context, del: GeneralGridAd
             imageView = convertView as ImageView
         }
         imageView.setImageBitmap(delegate.previewImageForCell(position))
-
         return imageView
     } // references to our images
 }

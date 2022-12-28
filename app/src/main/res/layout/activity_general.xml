@@ -4,22 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CDCDCD"
+    android:background="#FDFDFD"
     tools:context=".Modules.General.View.GeneralActivity">
+
+
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        android:background="#FFFFFF"></androidx.appcompat.widget.Toolbar>-->
 
     <Button
         android:id="@+id/addFileButton"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="#9A9A9A"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/sphere_background"
         android:text="+"
         android:textColor="#FFFFFF"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -38,13 +44,16 @@
         android:id="@+id/GalleryList"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="2dp"
         android:horizontalSpacing="6dp"
         android:numColumns="3"
         android:textColor="#000000"
         android:verticalSpacing="6dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/addFileButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

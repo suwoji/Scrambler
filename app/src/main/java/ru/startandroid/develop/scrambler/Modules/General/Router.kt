@@ -32,7 +32,16 @@ object Router {
     fun setStatus(status: Boolean){
         lockStatus = status
     }
+
     fun getStatus(): Boolean{
         return lockStatus
+    }
+    var remove = false
+    fun setRemoveTask(status: Boolean){
+        remove = status
+    }
+
+    fun getRemoveTask(): Boolean{
+        return remove
     }
 }
