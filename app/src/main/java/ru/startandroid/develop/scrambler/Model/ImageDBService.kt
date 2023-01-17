@@ -20,6 +20,9 @@ object ImageDBService{
         val managedImage = realm.writeBlocking {
             copyToRealm(imageInfo)
         }
+        Realm
+//        realm = Realm.DEFAULT_COMPACT_ON_LAUNCH_CALLBACK
+        configuration.compactOnLaunchCallback
     }
 
     suspend fun writeImageAsync(name : String, prewUri : Uri, origUri : Uri){
@@ -34,7 +37,6 @@ object ImageDBService{
     }
 
     fun queryAllImages() : ArrayList<ImageInfo> {
-
         return ArrayList(realm.query<ImageInfo>().find())
     }
     fun queryImage(pos: Int) : ImageInfo {
